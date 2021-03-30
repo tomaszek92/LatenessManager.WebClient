@@ -13,11 +13,11 @@ export class PlayersService {
   constructor(private httpClient: HttpClient) { }
 
   getAll(): Observable<Player[]> {
-    return this.httpClient.get<Player[]>('players');
+    return this.httpClient.get<Player[]>(this.getApiUrl('players'));
   }
 
   getById(playerId: number): Observable<PlayerDetails> {
-    return this.httpClient.get<PlayerDetails>(`players/${playerId}`);
+    return this.httpClient.get<PlayerDetails>(this.getApiUrl(`players/${playerId}`));
   }
 
   private getApiUrl(url: string): string {

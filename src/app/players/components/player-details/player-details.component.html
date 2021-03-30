@@ -1,1 +1,34 @@
-<p>player-details works!</p>
+<div class="mat-elevation-z4">
+
+  <div *ngIf="isLoading$ | async; then spinnerBlock else contentBlock"></div>
+
+  <ng-template #spinnerBlock>
+    <app-spinner></app-spinner>
+  </ng-template>
+
+  <ng-template #contentBlock>
+    <div *ngIf="player$ | async as player">
+
+      <div class="user-info">
+        <div>
+          <a mat-icon-button routerLink="/players">
+            <mat-icon>arrow_back</mat-icon>
+          </a>
+        </div>
+        <div>
+          <span class="mat-title">
+            {{ player.firstName }} {{ player.lastName }}
+          </span>
+        </div>
+      </div>
+
+      <mat-list>
+        <mat-list-item *ngFor="let penalty of player.penalties">
+          <mat-icon mat-list-icon>{{ penalty.count > 0 ? 'block' : 'done' }}</mat-icon>
+          <div mat-line> {{ penalty.date | date }} </div>
+          <div mat-line>{{ penalty.count }}</div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </ng-template>
+</div>

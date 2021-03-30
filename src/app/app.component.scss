@@ -1,0 +1,17 @@
+.layout {
+  display: grid;
+  grid-template-rows: 56px auto 56px;
+  height: 100vh;
+
+  header {
+    background-color: var(--color-primary);
+  }
+
+  main {
+    padding: 2rem;
+  }
+
+  footer {
+    background-color: var(--color-primary);
+  }
+}

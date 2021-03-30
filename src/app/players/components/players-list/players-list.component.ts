@@ -1,11 +1,12 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {PlayersService} from '../../services/players.service';
-import {Subject} from 'rxjs';
+import {BehaviorSubject, noop, Subject} from 'rxjs';
 import {Player} from '../../models/player.interface';
-import {takeUntil} from 'rxjs/operators';
+import {finalize, takeUntil} from 'rxjs/operators';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-players-list',
@@ -15,19 +16,29 @@ import {MatSort} from '@angular/material/sort';
 })
 export class PlayersListComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  ngDestroy$ = new Subject<never>();
+  private ngDestroy$ = new Subject<never>();
+
+  isLoading$ = new BehaviorSubject<boolean>(false);
   displayedColumns: string[] = ['firstName', 'lastName', 'penaltiesCount'];
   dataSource = new MatTableDataSource<Player>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private playersService: PlayersService) { }
+  constructor(
+    private playersService: PlayersService,
+    private router: Router) {
+  }
 
   ngOnInit(): void {
+    this.isLoading$.next(true);
+
     this.playersService
       .getAll()
-      .pipe(takeUntil(this.ngDestroy$))
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        finalize(() => this.isLoading$.next(false))
+      )
       .subscribe(players => this.dataSource.data = players);
   }
 
@@ -38,5 +49,9 @@ export class PlayersListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.ngDestroy$.next();
+  }
+
+  onRowClick(playerId: number): void {
+    this.router.navigateByUrl(`/players/${playerId}`).then(noop);
   }
 }

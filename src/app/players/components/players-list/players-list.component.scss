@@ -1,0 +1,11 @@
+table {
+  width: 100%;
+
+  .mat-row:hover {
+    text-decoration: underline;
+    background-color: rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+  }
+}
+
+

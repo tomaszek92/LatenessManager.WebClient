@@ -16,7 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
       - name: Run build
-        run: |
-          npm i
-          npm run build
+        run: npm run build
